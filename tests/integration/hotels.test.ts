@@ -217,6 +217,7 @@ describe("GET /hotels/:hotelId", () => {
           hotelId: createdHotel.id,
           createdAt: createdRoom.createdAt.toISOString(),
           updatedAt: createdRoom.updatedAt.toISOString(),
+          Booking: 0,
         }]
       });
     });
@@ -243,6 +244,40 @@ describe("GET /hotels/:hotelId", () => {
           createdAt: createdHotel.createdAt.toISOString(),
           updatedAt: createdHotel.updatedAt.toISOString(),
           Rooms: [],
+        }
+      );
+    });
+
+    it("should respond with status 200 and hotel with a rooms and it's booking count ", async () => {
+      const user = await createUser();
+      const token = await generateValidToken(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketTypeWithHotel();
+      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      const payment = await createPayment(ticket.id, ticketType.price);
+      const createdHotel = await createHotel();
+      const createdRoom = await createRoomWithHotelId(createdHotel.id);
+
+      const response = await server.get(`/hotels/${createdHotel.id}`).set("Authorization", `Bearer ${token}`);
+
+      expect(response.status).toEqual(httpStatus.OK);
+
+      expect(response.body).toEqual(
+        {
+          id: createdHotel.id,
+          name: createdHotel.name,
+          image: expect.any(String),
+          createdAt: createdHotel.createdAt.toISOString(),
+          updatedAt: createdHotel.updatedAt.toISOString(),
+          Rooms: [{
+            id: createdRoom.id,
+            name: createdRoom.name,
+            capacity: createdRoom.capacity,
+            hotelId: createdHotel.id,
+            createdAt: createdRoom.createdAt.toISOString(),
+            updatedAt: createdRoom.updatedAt.toISOString(),
+            Booking: 0,
+          }],
         }
       );
     });
