@@ -37,7 +37,7 @@ async function paymentProcess(ticketId: number, userId: number, cardData: CardPa
     value: ticket.TicketType.price,
     cardIssuer: cardData.issuer,
     cardLastDigits: cardData.number.toString().slice(-4),
-  };
+  };  
 
   const payment = await paymentRepository.createPayment(ticketId, paymentData);
 
