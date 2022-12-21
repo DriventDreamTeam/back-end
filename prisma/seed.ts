@@ -34,13 +34,55 @@ async function main() {
       }, {
         name: "Online",
         price: 100,
-        isRemote: false,
-        includesHotel: true
+        isRemote: true,
+        includesHotel: false
       },
       
       ] });
     ticketType = await prisma.ticketType.findMany();
     console.log({ ticketType });
+  }
+  let hotels = await prisma.hotel.findMany();
+
+  if (hotels.length===0) {
+    await prisma.hotel.createMany({
+      data: [{
+        name: "Hotel Chique",
+        image: "https://m7g2b8q3.stackpathcdn.com/wp-content/uploads/2018/06/melhores-hoteis-cordoba-nh.jpg"
+      }, {
+        name: "Hotel Muito Chique",
+        image: "https://www.melhoresdestinos.com.br/wp-content/uploads/2020/10/melhores-hoteis-do-mundo-capa2019-01.jpg"
+      }
+      ] });
+    hotels = await prisma.hotel.findMany();
+    console.log({ hotels });
+  }
+  let rooms = await prisma.room.findMany();
+
+  if (rooms.length===0) {
+    await prisma.room.createMany({
+      data: [{
+        name: "Hotel Chique Quarto 01",
+        capacity: 1,
+        hotelId: hotels[0]?.id
+      }, {
+        name: "Hotel Chique Quarto 02",
+        capacity: 2,
+        hotelId: hotels[0]?.id
+      },
+      {
+        name: "Hotel Muito Chique Quarto 01",
+        capacity: 2,
+        hotelId: hotels[1]?.id
+      },
+      {
+        name: "Hotel Muito Chique Quarto 01",
+        capacity: 4,
+        hotelId: hotels[1]?.id
+      }
+      ] });
+    rooms = await prisma.room.findMany();
+    console.log({ rooms });
   }
 }
 
