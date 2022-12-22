@@ -47,10 +47,14 @@ async function main() {
   if (hotels.length===0) {
     await prisma.hotel.createMany({
       data: [{
-        name: "Hotel Chique",
+        name: "Driven Resort",
         image: "https://m7g2b8q3.stackpathcdn.com/wp-content/uploads/2018/06/melhores-hoteis-cordoba-nh.jpg"
       }, {
-        name: "Hotel Muito Chique",
+        name: "Driven Palace",
+        image: "https://www.melhoresdestinos.com.br/wp-content/uploads/2020/10/melhores-hoteis-do-mundo-capa2019-01.jpg"
+      }
+      , {
+        name: "Driven World",
         image: "https://www.melhoresdestinos.com.br/wp-content/uploads/2020/10/melhores-hoteis-do-mundo-capa2019-01.jpg"
       }
       ] });
@@ -62,23 +66,65 @@ async function main() {
   if (rooms.length===0) {
     await prisma.room.createMany({
       data: [{
-        name: "Hotel Chique Quarto 01",
+        name: "01",
         capacity: 1,
         hotelId: hotels[0]?.id
       }, {
-        name: "Hotel Chique Quarto 02",
+        name: "02",
         capacity: 2,
+        hotelId: hotels[0]?.id
+      }, {
+        name: "03",
+        capacity: 2,
+        hotelId: hotels[0]?.id
+      }, {
+        name: "04",
+        capacity: 1,
         hotelId: hotels[0]?.id
       },
       {
-        name: "Hotel Muito Chique Quarto 01",
+        name: "01",
+        capacity: 3,
+        hotelId: hotels[1]?.id
+      },
+      {
+        name: "02",
         capacity: 2,
         hotelId: hotels[1]?.id
       },
       {
-        name: "Hotel Muito Chique Quarto 01",
-        capacity: 4,
+        name: "03",
+        capacity: 1,
         hotelId: hotels[1]?.id
+      },
+      {
+        name: "04",
+        capacity: 2,
+        hotelId: hotels[1]?.id
+      }, {
+        name: "01",
+        capacity: 1,
+        hotelId: hotels[2]?.id
+      }, {
+        name: "02",
+        capacity: 1,
+        hotelId: hotels[2]?.id
+      }, {
+        name: "03",
+        capacity: 1,
+        hotelId: hotels[2]?.id
+      }, {
+        name: "04",
+        capacity: 1,
+        hotelId: hotels[2]?.id
+      }, {
+        name: "05",
+        capacity: 1,
+        hotelId: hotels[2]?.id
+      }, {
+        name: "06",
+        capacity: 1,
+        hotelId: hotels[2]?.id
       }
       ] });
     rooms = await prisma.room.findMany();
