@@ -16,10 +16,10 @@ async function main() {
     });
   }
   console.log({ event });
-  
+
   let ticketType = await prisma.ticketType.findMany();
 
-  if (ticketType.length===0) {
+  if (ticketType.length === 0) {
     await prisma.ticketType.createMany({
       data: [{
         name: "Presencial Com Hotel",
@@ -37,14 +37,15 @@ async function main() {
         isRemote: true,
         includesHotel: false
       },
-      
-      ] });
+
+      ]
+    });
     ticketType = await prisma.ticketType.findMany();
     console.log({ ticketType });
   }
   let hotels = await prisma.hotel.findMany();
 
-  if (hotels.length===0) {
+  if (hotels.length === 0) {
     await prisma.hotel.createMany({
       data: [{
         name: "Driven Resort",
@@ -53,17 +54,18 @@ async function main() {
         name: "Driven Palace",
         image: "https://www.melhoresdestinos.com.br/wp-content/uploads/2020/10/melhores-hoteis-do-mundo-capa2019-01.jpg"
       }
-      , {
+        , {
         name: "Driven World",
         image: "https://www.melhoresdestinos.com.br/wp-content/uploads/2020/10/melhores-hoteis-do-mundo-capa2019-01.jpg"
       }
-      ] });
+      ]
+    });
     hotels = await prisma.hotel.findMany();
     console.log({ hotels });
   }
   let rooms = await prisma.room.findMany();
 
-  if (rooms.length===0) {
+  if (rooms.length === 0) {
     await prisma.room.createMany({
       data: [{
         name: "01",
@@ -126,13 +128,48 @@ async function main() {
         capacity: 1,
         hotelId: hotels[2]?.id
       }
-      ] });
+      ]
+    });
     rooms = await prisma.room.findMany();
     console.log({ rooms });
   }
+
+  let activityDays = await prisma.activityDay.findMany();
+
+  if (activityDays.length === 0) {
+    await prisma.activityDay.createMany({
+      data: [{
+        date: "Sexta, 22/10"
+      }, {
+        date: "Sabado, 23/10"
+      }, {
+        date: "Domingo, 24/10"
+      }
+      ]
+    });
+    activityDays = await prisma.activityDay.findMany();
+    console.log({ activityDays });
+  }
+
+  let activityLocations = await prisma.activityLocation.findMany();
+
+  if (activityLocations.length === 0) {
+    await prisma.activityLocation.createMany({
+      data: [{
+        name: "Auditório Principal"
+      }, {
+        name: "Auditório Lateral"
+      }, {
+        name: "Sala de Workshop"
+      }
+      ]
+    });
+    activityLocations = await prisma.activityLocation.findMany();
+    console.log({ activityLocations });
+  }
 }
 
-main()  
+main()
   .catch((e) => {
     console.error(e);
     process.exit(1);
