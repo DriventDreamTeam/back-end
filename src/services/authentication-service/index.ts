@@ -5,11 +5,12 @@ import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { invalidCredentialsError } from "./errors";
+import { createUser } from "../users-service";
 
 async function signIn(params: SignInParams): Promise<SignInResult> {
-  const { email, password } = params;
+  const { email, password, provider } = params;
 
-  const user = await getUserOrFail(email);
+  const user = await getUserOrFail(email, password, provider);
 
   await validatePasswordOrFail(password, user.password);
 
@@ -21,8 +22,17 @@ async function signIn(params: SignInParams): Promise<SignInResult> {
   };
 }
 
-async function getUserOrFail(email: string): Promise<GetUserOrFailResult> {
-  const user = await userRepository.findByEmail(email, { id: true, email: true, password: true });
+async function getUserOrFail(email: string, password: string, provider: string): Promise<GetUserOrFailResult> {
+  let user = await userRepository.findByEmail(email, { id: true, email: true, password: true });
+
+  if(!user && provider === "github.com") {
+    const userCreated = await createUser({ email, password });
+
+    if (!userCreated) throw invalidCredentialsError();
+
+    user = await userRepository.findByEmail(email, { id: true, email: true, password: true });
+  }
+
   if (!user) throw invalidCredentialsError();
 
   return user;
@@ -43,7 +53,7 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
   if (!isPasswordValid) throw invalidCredentialsError();
 }
 
-export type SignInParams = Pick<User, "email" | "password">;
+export type SignInParams = Pick<User, "email" | "password" | "provider">;
 
 type SignInResult = {
   user: Pick<User, "id" | "email">;
