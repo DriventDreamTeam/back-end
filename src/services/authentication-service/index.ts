@@ -53,7 +53,9 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
   if (!isPasswordValid) throw invalidCredentialsError();
 }
 
-export type SignInParams = Pick<User, "email" | "password" | "provider">;
+export type SignInParams = Pick<User, "email" | "password"> & {
+  provider?: string
+};
 
 type SignInResult = {
   user: Pick<User, "id" | "email">;
