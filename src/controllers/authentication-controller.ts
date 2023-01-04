@@ -2,10 +2,10 @@ import authenticationService, { SignInParams } from "@/services/authentication-s
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 export async function singInPost(req: Request, res: Response) {
-  const { email, password } = req.body as SignInParams;
-
+  const { email, password, provider } = req.body as SignInParams;
+  
   try {
-    const result = await authenticationService.signIn({ email, password });
+    const result = await authenticationService.signIn({ email, password, provider });
 
     return res.status(httpStatus.OK).send(result);
   } catch (error) {
