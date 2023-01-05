@@ -4,6 +4,6 @@ import { getDatesEvents, getEventsByDateId } from "@/controllers/activities-cont
 
 const activityRouter = Router();
 
-activityRouter.all("/*", authenticateToken).get("/", getDatesEvents).get("/:eventDateId", getEventsByDateId);
+activityRouter.all("/*", authenticateToken).get("/days", getDatesEvents).get("/:eventDateId", getEventsByDateId);
 
 export { activityRouter };
