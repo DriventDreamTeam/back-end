@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
-import { User } from "@prisma/client";
+import { TicketStatus, User } from "@prisma/client";
 
-import { createUser } from "./factories";
+import { createEnrollmentWithAddress, createTicket, createTicketTypeWithOrWithoutHotel, createUser } from "./factories";
 import { createSession } from "./factories/sessions-factory";
 import { prisma } from "@/config";
 
@@ -13,10 +13,13 @@ export async function cleanDb() {
   await prisma.event.deleteMany({});
   await prisma.session.deleteMany({});
   await prisma.booking.deleteMany({});
-  await prisma.user.deleteMany({});
   await prisma.ticketType.deleteMany({});
   await prisma.room.deleteMany({});
   await prisma.hotel.deleteMany({});
+  await prisma.user.deleteMany({});
+  await prisma.activity.deleteMany({});
+  await prisma.activityDay.deleteMany({});
+  await prisma.activityLocation.deleteMany({});
 }
 
 export async function generateValidToken(user?: User) {
@@ -26,4 +29,12 @@ export async function generateValidToken(user?: User) {
   await createSession(token);
 
   return token;
+}
+
+export async function generateValidTicket(user?: User) {
+  const incomingUser = user || (await createUser());
+  const enrollment = await createEnrollmentWithAddress(incomingUser);
+  const ticketType = await createTicketTypeWithOrWithoutHotel();
+
+  await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 }
