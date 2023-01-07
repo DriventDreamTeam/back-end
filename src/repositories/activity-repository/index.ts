@@ -26,10 +26,48 @@ async function findActivityById(activityId: number) {
   });
 }
 
+async function findscheduledActivitiesByticketId(ticketId: number) {
+  return prisma.activityTicket.findMany({
+    where: {
+      ticketId: ticketId,
+    },
+    include: {
+      Activity: true
+    }
+  });
+}
+
+async function findActivitiesById(activityId: number) {
+  return prisma.activity.findFirst({
+    where: {
+      id: activityId
+    },
+    include: {
+      _count: {
+        select: {
+          ActivityTicket: true
+        }
+      }
+    }
+
+  });
+}
+
+async function createActivityTicket(activityId: number, ticketId: number) {
+  return prisma.activityTicket.create({
+    data: {
+      activityId: activityId,
+      ticketId: ticketId
+    }
+  });
+}
 const acitivyRepository = {
   findActivityDates,
   findActivityByDateId,
   findActivityById,
+  findscheduledActivitiesByticketId,
+  findActivitiesById,
+  createActivityTicket
 };
 
 export default acitivyRepository;

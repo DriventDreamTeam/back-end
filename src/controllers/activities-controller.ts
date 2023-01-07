@@ -32,3 +32,27 @@ export async function getEventsByDateId(req: AuthenticatedRequest, res: Response
     return res.sendStatus(httpStatus.UNAUTHORIZED);
   }
 }
+
+export async function scheduleActivity(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const activityId = Number(req.params.activityId);
+
+  if (!activityId || activityId < 1) return res.sendStatus(httpStatus.BAD_REQUEST);
+
+  try {
+    await activityService.createActivityTicket(activityId, userId);
+
+    return res.sendStatus(httpStatus.OK);
+  } catch (error) {
+    if (error.name === "PaymentRequiredError") {
+      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+    }
+    if (error.name === "timeConflictError") {
+      return res.sendStatus(httpStatus.CONFLICT);
+    }
+    if (error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }
+    return res.sendStatus(httpStatus.UNAUTHORIZED);
+  }
+}

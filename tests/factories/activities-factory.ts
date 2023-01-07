@@ -30,3 +30,12 @@ export function createActivity(activityDayId: number, ActivityLocationId: number
     },
   });
 }
+
+export function createActivityTicket(activityId: number, ticketId: number) {
+  return prisma.activityTicket.create({
+    data: {
+      activityId: activityId,
+      ticketId: ticketId
+    }
+  });
+}
