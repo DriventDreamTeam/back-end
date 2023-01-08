@@ -8,6 +8,7 @@ async function findActivityByDateId(dateId: number) {
   return prisma.activityLocation.findMany({
     include: {
       Activity: {
+        orderBy: { startsAt: "asc" },
         where: {
           activityDayId: dateId,
         },
