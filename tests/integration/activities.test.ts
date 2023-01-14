@@ -247,6 +247,7 @@ describe("GET /activities/:eventDateId", () => {
                 startsAt: activity.startsAt.toISOString(),
                 endsAt: activity.endsAt.toISOString(),
                 ActivityTicket: [],
+                isScheduled: false,
                 createdAt: activity.createdAt.toISOString(),
                 updatedAt: activity.updatedAt.toISOString(),
               },

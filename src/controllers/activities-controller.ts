@@ -33,7 +33,7 @@ export async function getEventsByDateId(req: AuthenticatedRequest, res: Response
   }
 }
 
-export async function scheduleActivity(req: AuthenticatedRequest, res: Response) {
+export async function postActivityTicket(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const activityId = Number(req.params.activityId);
 
