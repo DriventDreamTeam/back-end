@@ -33,32 +33,38 @@ async function findscheduledActivitiesByticketId(ticketId: number) {
       ticketId: ticketId,
     },
     include: {
-      Activity: true
-    }
+      Activity: true,
+    },
   });
 }
 
 async function findActivitiesById(activityId: number) {
   return prisma.activity.findFirst({
     where: {
-      id: activityId
+      id: activityId,
     },
     include: {
       _count: {
         select: {
-          ActivityTicket: true
-        }
-      }
-    }
-
+          ActivityTicket: true,
+        },
+      },
+    },
   });
 }
-
 async function createActivityTicket(activityId: number, ticketId: number) {
-  return prisma.activityTicket.create({
-    data: {
-      activityId: activityId,
-      ticketId: ticketId
+  const activity = await prisma.activity.findUnique({ where: { id: activityId } });
+  const activityCapacity = activity?.capacity;
+  return await prisma.$transaction(async (tx) => {
+    const activityTickets = await tx.activityTicket.findMany({ where: { activityId } });
+    await tx.activityTicket.create({
+      data: {
+        activityId: activityId,
+        ticketId: ticketId,
+      },
+    });
+    if (activityTickets.length >= activityCapacity) {
+      throw new Error("There are no more vacancies!");
     }
   });
 }
@@ -68,7 +74,7 @@ const acitivyRepository = {
   findActivityById,
   findscheduledActivitiesByticketId,
   findActivitiesById,
-  createActivityTicket
+  createActivityTicket,
 };
 
 export default acitivyRepository;
