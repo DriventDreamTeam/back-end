@@ -3,8 +3,7 @@ import enrollmentRepository from "@/repositories/enrollment-repository";
 import ticketRepository from "@/repositories/ticket-repository";
 import { notFoundError } from "@/errors";
 import { cannotListHotelsError } from "@/errors/cannot-list-hotels-error";
-import { Booking, Hotel, Room } from "@prisma/client";
-import { number } from "joi";
+import { Hotel, Room } from "@prisma/client";
 
 type hotelUniqueType = Hotel & {
   Rooms: (Room & {

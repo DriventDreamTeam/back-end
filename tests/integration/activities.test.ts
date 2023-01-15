@@ -288,10 +288,10 @@ describe("POST /activities/schedule/activityId", () => {
     it("it should respond with status 400 if activityId is not a number", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
-      const enrollment = await createEnrollmentWithAddress(user);
-      const ticketType = await createTicketType();
-      const local = await createLocalActivity();
-      const date = await createDateActivity();
+      await createEnrollmentWithAddress(user);
+      await createTicketType();
+      await createLocalActivity();
+      await createDateActivity();
 
       const response = await server.post("/activities/schedule/a").set("Authorization", `Bearer ${token}`);
 
@@ -303,9 +303,9 @@ describe("POST /activities/schedule/activityId", () => {
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createTicketType();
-      const local = await createLocalActivity();
-      const date = await createDateActivity();
-      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      await createLocalActivity();
+      await createDateActivity();
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
       const response = await server.post("/activities/schedule/0").set("Authorization", `Bearer ${token}`);
 
@@ -319,8 +319,8 @@ describe("POST /activities/schedule/activityId", () => {
       const ticketType = await createTicketType();
       const local = await createLocalActivity();
       const date = await createDateActivity();
-      const activity = await createActivity(date.id, local.id);
-      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
+      await createActivity(date.id, local.id);
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
 
       const response = await server.post("/activities/schedule/1").set("Authorization", `Bearer ${token}`);
 
@@ -384,7 +384,7 @@ describe("POST /activities/schedule/activityId", () => {
       const local = await createLocalActivity();
       const date = await createDateActivity();
       const activity = await createActivity(date.id, local.id);
-      const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
+      await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
 
       const response = await server.post(`/activities/schedule/${activity.id}`).set("Authorization", `Bearer ${token}`);
 
