@@ -57,7 +57,7 @@ async function createActivityTicket(activityId: number, ticketId: number) {
   const activityCapacity = activity?.capacity;
   return await prisma.$transaction(async (tx) => {
     const activityTickets = await tx.activityTicket.findMany({ where: { activityId } });
-    await tx.activityTicket.create({
+    const createdActivityTicket = await tx.activityTicket.create({
       data: {
         activityId: activityId,
         ticketId: ticketId,
@@ -66,6 +66,7 @@ async function createActivityTicket(activityId: number, ticketId: number) {
     if (activityTickets.length >= activityCapacity) {
       throw new Error("There are no more vacancies!");
     }
+    return createdActivityTicket;
   });
 }
 const acitivyRepository = {
