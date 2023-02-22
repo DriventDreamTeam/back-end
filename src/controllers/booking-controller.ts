@@ -16,6 +16,32 @@ export async function listBooking(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+export async function UserBooking(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const booking = await bookingService.getUserBooking(userId);
+    return res.status(httpStatus.OK).send({
+      bookingId: booking.id,
+      userId: booking.userId,
+      roomId: booking.roomId,
+      Room: {
+        id: booking.Room.id,
+        name: booking.Room.name,
+        capacity: booking.Room.capacity,
+        hotelId: booking.Room.hotelId,
+        Booking: booking.Room._count.Booking,
+        Hotel: {
+          id: booking.Room.Hotel.id,
+          name: booking.Room.Hotel.name,
+          image: booking.Room.Hotel.image,
+        },
+      },
+    });
+  } catch (error) {
+    return res.sendStatus(httpStatus.NOT_FOUND);
+  }
+}
+
 export async function bookingRoom(req: AuthenticatedRequest, res: Response) {
   try {
     const { userId } = req;
@@ -28,9 +54,11 @@ export async function bookingRoom(req: AuthenticatedRequest, res: Response) {
 
     const booking = await bookingService.bookingRoomById(userId, Number(roomId));
 
-    return res.status(httpStatus.OK).send({
-      bookingId: booking.id,
-    });
+    if (booking) {
+      return res.status(httpStatus.OK).send({
+        bookingId: booking.id,
+      });
+    }
   } catch (error) {
     if (error.name === "CannotBookingError") {
       return res.sendStatus(httpStatus.FORBIDDEN);
@@ -57,9 +85,11 @@ export async function changeBooking(req: AuthenticatedRequest, res: Response) {
 
     const booking = await bookingService.changeBookingRoomById(userId, Number(roomId));
 
-    return res.status(httpStatus.OK).send({
-      bookingId: booking.id,
-    });
+    if (booking) {
+      return res.status(httpStatus.OK).send({
+        bookingId: booking.id,
+      });
+    }
   } catch (error) {
     if (error.name === "CannotBookingError") {
       return res.sendStatus(httpStatus.FORBIDDEN);
@@ -67,4 +97,3 @@ export async function changeBooking(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }
-

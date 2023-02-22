@@ -14,6 +14,7 @@ describe("signIn", () => {
   const generateParams = () => ({
     email: faker.internet.email(),
     password: faker.internet.password(6),
+    provider: "",
   });
 
   it("should throw InvalidCredentialError if there is no user for given email", async () => {
